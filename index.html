@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gerenciamento de Produtos</title>
+    <style>
+        * {
+          box-sizing: border-box;
+          list-style: none;
+          margin: 0;
+          outline: 0;
+          padding: 0;
+          text-decoration: none;
+        }
+        html, body {
+          max-width: 100%;
+          overflow-x: hidden;
+          scroll-behavior: smooth;
+          scrollbar-width: none;
+        }
+
+        body {
+          background-color: #FCFCFC;
+          font-family: "Poppins", sans-serif;
+          font-size: 16px;
+          letter-spacing: 2px;
+          overflow-x: unset;
+          -webkit-font-smoothing: antialiased;
+        }
+
+        .content {
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            justify-content: space-around;
+            padding: 2rem;
+        }
+
+        .productPanel {
+          width: 40vw;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          flex-direction: column;
+        }
+
+        .productPanel form {
+          width: 100%;
+          margin-top: 1rem;
+        }
+        
+        .productPanel form label {
+          width: 100%;
+          text-align: left;
+          font-size: 0.85rem;
+        }
+
+        .productPanel form input {
+          width: 100%;
+          border: none;
+          border-bottom: 1px solid #2C3D55;
+          margin-bottom: 0.5rem; 
+        }
+
+        .productPanel form button {
+          width: 100%;
+          border: none;
+          margin-top: 1rem;
+          padding: 0.5rem 0.75rem;
+          text-transform: uppercase;
+          font-weight: bold;
+          background-color: #2C3D55;
+          color: #FCFCFC;
+          letter-spacing: 0.15rem;
+        }
+
+        .productTablePanel {
+          display: flex;
+          flex-direction: column;
+          width: 60vw;
+          height: 100vh;
+          justify-content: flex-start;
+          align-items: center;
+        }
+
+        .productTablePanel table {
+          width: 100%;
+          overflow-y: auto;
+        }
+
+        .productForm {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            justify-content: space-between;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: center;
+
+        }
+
+        td button {
+          background-color: #2C3D55;
+          color: #FCFCFC;
+        }
+
+        th {
+            background-color: #2C3D55;
+            color: #FCFCFC;
+        }
+
+        h2 {
+            text-align: center;
+            margin-bottom: 1rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="content">
+        <div class="productPanel">
+            <h2>Novo Produto</h2>
+            <form id="productForm" class="productForm">
+                <label for="productName">Nome do Produto</label>
+                <input type="text" id="productName" required>
+        
+                <label for="productPrice">Preço</label>
+                <input type="number" id="productPrice" required>
+        
+                <label for="productDescription">Descrição</label>
+                <input type="text" id="productDescription" required>
+        
+                <button type="submit">Adicionar Produto</button>
+            </form>
+        </div>
+        <div class="productTablePanel">
+            <h2>Lista de Produtos</h2>
+            <table id="productTable">
+                <thead>
+                    <tr>
+                        <th>Código</th>
+                        <th>Nome do Produto</th>
+                        <th>Preço</th>
+                        <th>Descrição</th>
+                        <th>Ações</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Linhas da tabela serão adicionadas dinamicamente aqui -->
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const form = document.getElementById('productForm');
+            const table = document.getElementById('productTable').getElementsByTagName('tbody')[0];
+
+            const produtos = [
+                {
+                    nome: 'Chuteira do Pelé',
+                    preco: '1500,00',
+                    descricao: 'teste de descrição',
+
+                    codigo: 'ABC-123' 
+                },
+                {
+                    nome: 'Chuteira do Neymar',
+                    descricao: 'teste de descrição',
+                    preco: '1600,00',
+                    codigo: 'ABC-456' 
+                },
+                {
+                    nome: 'Chuteira do CR7',
+                    descricao: 'teste de descriçao',
+                    preco: '1700,00',
+                    codigo: 'ABC-789',
+                },
+            ];
+
+            produtos.forEach((produto) => {
+                // Adiciona uma nova linha à tabela
+                const newRow = table.insertRow(table.rows.length);
+                const cell1 = newRow.insertCell(0);
+                const cell2 = newRow.insertCell(1);
+                const cell3 = newRow.insertCell(2);
+                const cell4 = newRow.insertCell(3);
+                const cell5 = newRow.insertCell(4);
+
+                cell1.innerHTML = table.rows.length - 1;
+                cell2.innerHTML = produto.nome;
+                cell3.innerHTML = produto.preco;
+                cell4.innerHTML = produto.descricao;
+                cell5.innerHTML = '<button onclick="editRow(this)">Editar</button> <button onclick="deleteRow(this)">Excluir</button>';
+            })
+
+            form.addEventListener('submit', function (event) {
+                event.preventDefault();
+
+                const productName = document.getElementById('productName').value;
+                const productPrice = document.getElementById('productPrice').value;
+                const productDescription = document.getElementById('productDescription').value;
+
+                // Adiciona uma nova linha à tabela
+                const newRow = table.insertRow(table.rows.length);
+                const cell1 = newRow.insertCell(0);
+                const cell2 = newRow.insertCell(1);
+                const cell3 = newRow.insertCell(2);
+                const cell4 = newRow.insertCell(3);
+                const cell5 = newRow.insertCell(4)
+
+                cell1.innerHTML = table.rows.length - 1;
+                cell2.innerHTML = productName;
+                cell3.innerHTML = productPrice;
+                cell4.innerHTML = productDescription;
+                cell5.innerHTML = '<button onclick="editRow(this)">Editar</button> <button onclick="deleteRow(this)">Excluir</button>';
+
+                // Limpa os campos do formulário após a adição
+                form.reset();
+            });
+        });
+
+        function editRow(button) {
+            const row = button.parentNode.parentNode;
+            const cells = row.getElementsByTagName('td');
+
+            const productName = prompt('Novo nome do produto:', cells[1].innerHTML);
+            const productPrice = prompt('Novo preço:', cells[2].innerHTML);
+            const productDescription = prompt('Nova descrição: ', cells[3].innerHTML);
+
+            cells[1].innerHTML = productName;
+            cells[2].innerHTML = productPrice;
+            cells[3].innerHTML = productDescription;
+        }
+
+        function deleteRow(button) {
+            const row = button.parentNode.parentNode;
+            row.parentNode.removeChild(row);
+        }
+    </script>
+</body>
+</html>
